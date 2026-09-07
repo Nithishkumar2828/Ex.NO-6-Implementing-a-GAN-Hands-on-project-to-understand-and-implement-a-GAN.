@@ -4,24 +4,28 @@ Generative Adversarial Network (GAN)
 Generative Adversarial Networks (GAN) can generate realistic images by learning from existing image datasets. Here we will be implementing a GAN trained on the CIFAR-10 dataset using PyTorch.
 ## Procedure:
 Step 1: Importing Required Libraries
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvisionfrom torchvision
-import datasets, transforms
-import matplotlib.pyplot as plt
-import numpy as np
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    import torchvisionfrom torchvision
+    import datasets, transforms
+    import matplotlib.pyplot as plt
+    import numpy as np
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 Step 2: Defining Image Transformations
 Use PyTorch’s transforms to convert images to tensors and normalize pixel values between -1 and 1 for better training stability.
-transform = transforms.Compose([
-transforms.ToTensor(),
-transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    
+    transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
 Step 3: Loading the CIFAR-10 Dataset
 Download and load the CIFAR-10 dataset with defined transformations. Use a DataLoader to process the dataset in mini-batches of size 32 and shuffle the data
 
-train_dataset = datasets.CIFAR10(root='./data',train=True, download=True, transform=transform)
-dataloader = torch.utils.data.DataLoader(train_dataset,batch_size=32, shuffle=True)
+    train_dataset = datasets.CIFAR10(root='./data',train=True, download=True, transform=transform)
+    dataloader = torch.utils.data.DataLoader(train_dataset,batch_size=32, shuffle=True)
 
 Step 4: Defining GAN Hyperparameters
 Set important training parameters:
