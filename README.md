@@ -30,11 +30,11 @@ Set important training parameters:
 •	beta1, beta2: Beta parameters for Adam optimizer (e.g 0.5, 0.999)
 •	num_epochs: Number of times the entire dataset will be processed (e.g 10)
 
-latent_dim = 100
-lr = 0.0002
-beta1 = 0.5
-beta2 = 0.999
-num_epochs = 10
+    latent_dim = 100
+    lr = 0.0002
+    beta1 = 0.5
+    beta2 = 0.999
+    num_epochs = 10
 
 Step 5: Building the Generator
 Create a neural network that converts random noise into images. Use transpose convolutional layers, batch normalization and ReLU activations. The final layer uses Tanh activation to scale outputs to the range [-1, 1].
@@ -42,9 +42,9 @@ Create a neural network that converts random noise into images. Use transpose co
 •	nn.Upsample(scale_factor=2): Doubles the spatial resolution of the feature maps by upsampling.
 •	nn.Conv2d(128, 128, kernel_size=3, padding=1): Applies a convolutional layer keeping the number of channels the same to refine features.
 
-class Generator(nn.Module):
-    def __init__(self, latent_dim):
-        super(Generator, self).__init__()
+    class Generator(nn.Module):
+        def __init__(self, latent_dim):
+            super(Generator, self).__init__()
 
         self.model = nn.Sequential(
             nn.Linear(latent_dim, 128 * 8 * 8),
@@ -69,9 +69,10 @@ Step 6: Building the Discriminator
 Create a binary classifier network that distinguishes real from fake images. Use convolutional layers, batch normalization, dropout, LeakyReLU activation and a Sigmoid output layer to give a probability between 0 and 1.
 •	nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1): Second convolutional layer increasing channels to 64, downsampling further.
 •	nn.BatchNorm2d(256, momentum=0.8): Batch normalization for 256 feature maps with momentum 0.8.
-class Discriminator(nn.Module):
-    def __init__(self):
-        super(Discriminator, self).__init__()
+    
+    class Discriminator(nn.Module):
+        def __init__(self):
+            super(Discriminator, self).__init__()
 
         self.model = nn.Sequential(
         nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1),
@@ -102,11 +103,12 @@ Step 7: Initializing GAN Components
 •	Generator and Discriminator are initialized on the available device (GPU or CPU).
 •	Binary Cross-Entropy (BCE) Loss is chosen as the loss function.
 •	Adam optimizers are defined separately for the generator and discriminator with specified learning rates and betas.
-generator = Generator(latent_dim).to(device)discriminator = Discriminator().to(device)
-adversarial_loss = nn.BCELoss()
-optimizer_G = optim.Adam(generator.parameters()
-                         , lr=lr, betas=(beta1, beta2))optimizer_D = optim.Adam(discriminator.parameters()
-                         , lr=lr, betas=(beta1, beta2))
+    
+    generator = Generator(latent_dim).to(device)discriminator = Discriminator().to(device)
+    adversarial_loss = nn.BCELoss()
+    optimizer_G = optim.Adam(generator.parameters()
+                             , lr=lr, betas=(beta1, beta2))optimizer_D =            optim.Adam(discriminator.parameters()
+                             , lr=lr, betas=(beta1, beta2))
 
 Step 8: Training the GAN
 Train the discriminator on real and fake images, then update the generator to improve its fake image quality. Track losses and visualize generated images after each epoch.
@@ -115,8 +117,9 @@ Train the discriminator on real and fake images, then update the generator to im
 •	z = torch.randn(real_images.size(0), latent_dim, device=device): Generate random noise vectors as input for the generator.
 •	g_loss = adversarial_loss(discriminator(gen_images), valid): Calculate generator loss based on the discriminator classifying fake images as real.
 •	grid = torchvision.utils.make_grid(generated, nrow=4, normalize=True): Arrange generated images into a grid for display, normalizing pixel values.
-for epoch in range(num_epochs):
-    for i, batch in enumerate(dataloader):
+    
+    for epoch in range(num_epochs):
+        for i, batch in enumerate(dataloader):
        
         real_images = batch[0].to(device) 
        
@@ -127,13 +130,13 @@ for epoch in range(num_epochs):
 
         optimizer_D.zero_grad()
        
-z = torch.randn(real_images.size(0), latent_dim, device=device)
+    z = torch.randn(real_images.size(0), latent_dim, device=device)
       
         fake_images = generator(z)
 
-real_loss = adversarial_loss(discriminator(real_images), valid)
-fake_loss=adversarial_loss(discriminator(fake_images.detach()), fake)
-        d_loss = (real_loss + fake_loss) / 2
+    real_loss = adversarial_loss(discriminator(real_images), valid)
+    fake_loss=adversarial_loss(discriminator(fake_images.detach()), fake)
+            d_loss = (real_loss + fake_loss) / 2
     
         d_loss.backward()
         optimizer_D.step()
@@ -145,23 +148,23 @@ fake_loss=adversarial_loss(discriminator(fake_images.detach()), fake)
         g_loss = adversarial_loss(discriminator(gen_images),valid)
         g_loss.backward()
         optimizer_G.step()
-if (i + 1) % 100 == 0:
-
-
-if (i + 1) % 100 == 0:
-            print(
-                f"Epoch [{epoch+1}/{num_epochs}]                       Batch {i+1}/{len(dataloader)} "
-                f"Discriminator Loss: {d_loss.item():.4f} "
-                f"Generator Loss: {g_loss.item():.4f}"
-            )
-    if (epoch + 1) % 10 == 0:
-        with torch.no_grad():
-            z = torch.randn(16, latent_dim, device=device)
-            generated = generator(z).detach().cpu()
-            grid = torchvision.utils.make_grid(generated,
-                                        nrow=4, normalize=True)
-            plt.imshow(np.transpose(grid, (1, 2, 0)))
-            plt.axis("off")
+    if (i + 1) % 100 == 0:
+    
+    
+    if (i + 1) % 100 == 0:
+                print(
+                    f"Epoch [{epoch+1}/{num_epochs}]                       Batch {i+1}/{len(dataloader)} "
+                    f"Discriminator Loss: {d_loss.item():.4f} "
+                    f"Generator Loss: {g_loss.item():.4f}"
+                )
+        if (epoch + 1) % 10 == 0:
+            with torch.no_grad():
+                z = torch.randn(16, latent_dim, device=device)
+                generated = generator(z).detach().cpu()
+                grid = torchvision.utils.make_grid(generated,
+                                            nrow=4, normalize=True)
+                plt.imshow(np.transpose(grid, (1, 2, 0)))
+                plt.axis("off")
             plt.show()
 
     
